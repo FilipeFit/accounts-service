@@ -1,13 +1,13 @@
-# customer-service
-A microservice to handle customers
+# Account-Service
+A microservice to handle accounting in the Sensedia Demo 
 
 ## Running the application
-This Application is ready to run in containers, the image
-can be built using the command:
-docker build -t customer-service . 
+This Application is ready to run in containers, the image can be built using the command:
+docker build -t account-service . 
 
-This application contains a .env file containing the 
-necessary environment variables that it needs to run
+This application contains is able to run with a .env file containing the 
+necessary environment variables that it needs to run the environments are 
+described below
 
 It's also possible to change the variables using environment 
 variables during the container start up, the variables available are the
