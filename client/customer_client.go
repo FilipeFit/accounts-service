@@ -10,10 +10,10 @@ import (
 	"io/ioutil"
 )
 
-func GetCustomer(customerID uint64) (*api.GetCustomerResponse, error) {
+func GetCustomer(customerID uint64, authorization string) (*api.GetCustomerResponse, error) {
 	url := fmt.Sprintf("%s/%d", config.Config.CustomerServiceUrl, customerID)
 	var customer api.GetCustomerResponse
-	response, err := restclient.Get(url)
+	response, err := restclient.Get(url, authorization)
 	if err != nil {
 		return nil, err
 	}

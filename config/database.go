@@ -2,12 +2,13 @@ package config
 
 import (
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/filipeFit/account-service/domain"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"log"
-	"time"
 )
 
 var DB *gorm.DB

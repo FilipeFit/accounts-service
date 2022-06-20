@@ -2,13 +2,15 @@ package app
 
 import (
 	"fmt"
+	"io"
+	"log"
+	"os"
+	"time"
+
 	ginopentracing "github.com/Bose/go-gin-opentracing"
 	"github.com/filipeFit/account-service/config"
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
-	"io"
-	"log"
-	"os"
 )
 
 var (
@@ -22,11 +24,29 @@ func init() {
 
 func StartApp() {
 	handleTracing()
+	handleLogFormating()
 	mapRoutes()
+
 	appPort := fmt.Sprintf(":%s", config.Config.AppPort)
 	if err := router.Run(appPort); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func handleLogFormating() {
+	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
+			param.ClientIP,
+			param.TimeStamp.Format(time.RFC1123),
+			param.Method,
+			param.Path,
+			param.Request.Proto,
+			param.StatusCode,
+			param.Latency,
+			param.Request.UserAgent(),
+			param.ErrorMessage,
+		)
+	}))
 }
 
 func handleTracing() {
@@ -46,7 +66,7 @@ func handleTracing() {
 	defer func(closer io.Closer) {
 		err := closer.Close()
 		if err != nil {
-
+			log.Fatal("Not possible to close the io logger")
 		}
 	}(closer)
 	defer reporter.Close()

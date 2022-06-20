@@ -1,12 +1,13 @@
 package account
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/filipeFit/account-service/domain/api"
 	"github.com/filipeFit/account-service/handlers"
 	"github.com/filipeFit/account-service/services"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
 )
 
 var (
@@ -20,8 +21,8 @@ func CreateAccount(c *gin.Context) {
 		c.JSON(apiErr.ResponseStatus(), apiErr)
 		return
 	}
-
-	response, err := accountService.CreateAccount(&request)
+	authorization := c.Request.Header.Get("Authorization")
+	response, err := accountService.CreateAccount(&request, authorization)
 	if err != nil {
 		c.JSON(err.ResponseStatus(), err)
 		return
@@ -37,8 +38,8 @@ func FindByAccountId(c *gin.Context) {
 		c.JSON(apiErr.ResponseStatus(), apiErr)
 		return
 	}
-
-	response, apiErr := accountService.FindByAccountID(accountId)
+	authorization := c.Request.Header.Get("Authorization")
+	response, apiErr := accountService.FindByAccountID(accountId, authorization)
 	if apiErr != nil {
 		c.JSON(apiErr.ResponseStatus(), apiErr)
 		return
@@ -47,7 +48,8 @@ func FindByAccountId(c *gin.Context) {
 }
 
 func FindAll(c *gin.Context) {
-	response, apiErr := accountService.FindAll()
+	authorization := c.Request.Header.Get("Authorization")
+	response, apiErr := accountService.FindAll(authorization)
 	if apiErr != nil {
 		c.JSON(apiErr.ResponseStatus(), apiErr)
 		return
@@ -79,7 +81,9 @@ func Statement(c *gin.Context) {
 		return
 	}
 
-	response, apiErr := accountService.AccountStatement(accountId)
+	authorization := c.Request.Header.Get("Authorization")
+
+	response, apiErr := accountService.AccountStatement(accountId, authorization)
 	if apiErr != nil {
 		c.JSON(apiErr.ResponseStatus(), apiErr)
 		return
